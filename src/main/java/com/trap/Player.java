@@ -3,7 +3,8 @@ package com.trap;
 public class Player {
 
     private String name;
-    private int points;
+
+    private int position;
 
     public String getName() {
         return name;
@@ -17,13 +18,6 @@ public class Player {
         this.name = name;
     }
 
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
 
     public int getPosition() {
         return position;
@@ -33,13 +27,10 @@ public class Player {
         this.position = position;
     }
 
-    private int position;
-
     @Override
     public String toString() {
         return "Player{" +
                 "name='" + name + '\'' +
-                ", points=" + points +
                 ", position=" + position +
                 '}';
     }

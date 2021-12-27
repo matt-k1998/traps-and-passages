@@ -14,13 +14,19 @@ import java.util.Scanner;
 public class Game {
 
     final Scanner scanner = new Scanner(System.in);
-    final int gameBoard [] = { 0, 2, 2, 1, 0, 2, 0, 1, 0 };
+    /*
+        Key to board:
+        0 = normal spot
+        1 = trap
+        2 = secret passage
+     */
+    final int gameBoard [] = { 0, 1, 2, 0, 0, 2, 0, 1, 0 };
 
     private List<Player> addPlayers(){
         List<Player> players = new ArrayList<>();
         System.out.println("how many players?");
         int noOfPlayers = scanner.nextInt();
-        for (int i = 1; i<= noOfPlayers; i++){
+        for (int i = 1; i <= noOfPlayers; i++) {
             System.out.println("Enter name of player " + i);
             String playerName = scanner.next();
             players.add(new Player(playerName));
@@ -55,7 +61,18 @@ public class Game {
         return userAnswer.equalsIgnoreCase(randomQuestion.getAnswer());
     }
 
-    private int calculatePoints() {
+    private int rollDice() {
+        return (int)(Math.random()*6) + 1;
+    }
+
+    private int checkCurrentSpot(int position) {
+        //TODO: check the spot again until it is a 0??
+        if (gameBoard[position-1] == 1)
+            return -1;
+        else if (gameBoard[position-1] == 2)
+            return 1;
+        else if (gameBoard[position-1] == 0)
+            return 0;
         return 0;
     }
 
@@ -71,13 +88,17 @@ public class Game {
             System.out.println(randomQuestion.getQuestion());
             String userAnswer = game.userAnswer();
             boolean isCorrectAnswer = game.checkAnswer(randomQuestion, userAnswer);
-            System.out.println(isCorrectAnswer);
             if (isCorrectAnswer) {
-                player.setPosition(player.getPosition() + 1);
+                int dieResult = game.rollDice();
+                System.out.println("Player " + player.getName() + " rolled a " + dieResult);
+                player.setPosition(player.getPosition() + dieResult);
+                int positionsToMove = game.checkCurrentSpot(player.getPosition());
+                System.out.println("Player " + player.getName() + " should move further " + positionsToMove + " position");
+                player.setPosition(player.getPosition() + positionsToMove);
+                System.out.println("Player " + player.getName() + "'s position is: " + player.getPosition());
             } else {
                 player.setPosition(player.getPosition() - 1);
             }
-            int calculatePoints = game.calculatePoints(); //todo implement logic for calculating points and positions
         }
         System.out.println(players);
     }
