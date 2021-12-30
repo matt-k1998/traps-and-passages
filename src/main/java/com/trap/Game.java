@@ -20,7 +20,7 @@ public class Game {
         1 = trap
         2 = secret passage
      */
-    final int gameBoard [] = { 0, 1, 2, 0, 0, 2, 0, 1, 0 };
+    final static int [] gameBoard = { 0, 1, 2, 0, 0, 2, 0, 1, 0 };
 
     private List<Player> addPlayers(){
         List<Player> players = new ArrayList<>();
@@ -66,6 +66,9 @@ public class Game {
     }
 
     private int checkCurrentSpot(int position) {
+        if (position >= gameBoard.length-1){
+            return 0;
+        }
         //TODO: check the spot again until it is a 0??
         if (gameBoard[position-1] == 1)
             return -1;
@@ -83,23 +86,37 @@ public class Game {
     private static void gameplay() {
         Game game = new Game();
         List<Player> players = game.addPlayers();
+        while(!game.hasTheGameEnded(players)) {
+            for (Player player : players) {
+                Quiz randomQuestion = game.getRandomQuestion();
+                System.out.println(randomQuestion.getQuestion());
+                String userAnswer = game.userAnswer();
+                boolean isCorrectAnswer = game.checkAnswer(randomQuestion, userAnswer);
+                if (isCorrectAnswer) {
+                    final int dieResult = game.rollDice();
+                    System.out.println("Player " + player.getName() + " rolled a " + dieResult);
+                    player.setPosition(player.getPosition() + dieResult);
+                    int positionsToMove = game.checkCurrentSpot(player.getPosition());
+                    System.out.println("Player " + player.getName() + " should move further " + positionsToMove + " position");
+                    player.setPosition(player.getPosition() + positionsToMove);
+                    System.out.println("Player " + player.getName() + "'s position is: " + player.getPosition());
+                } else {
+                    if (player.getPosition() > 0 ) {
+                        player.setPosition(player.getPosition() - 1);
+                    }
+                }
+            }
+            System.out.println(players);
+        }
+    }
+
+    private boolean hasTheGameEnded(List<Player> players) {
         for (Player player: players){
-            Quiz randomQuestion = game.getRandomQuestion();
-            System.out.println(randomQuestion.getQuestion());
-            String userAnswer = game.userAnswer();
-            boolean isCorrectAnswer = game.checkAnswer(randomQuestion, userAnswer);
-            if (isCorrectAnswer) {
-                int dieResult = game.rollDice();
-                System.out.println("Player " + player.getName() + " rolled a " + dieResult);
-                player.setPosition(player.getPosition() + dieResult);
-                int positionsToMove = game.checkCurrentSpot(player.getPosition());
-                System.out.println("Player " + player.getName() + " should move further " + positionsToMove + " position");
-                player.setPosition(player.getPosition() + positionsToMove);
-                System.out.println("Player " + player.getName() + "'s position is: " + player.getPosition());
-            } else {
-                player.setPosition(player.getPosition() - 1);
+            if (player.getPosition() >= gameBoard.length-1){
+                System.out.println("Player " + player.getName() + " has reached position " + player.getPosition() + " and won");
+                return true;
             }
         }
-        System.out.println(players);
+        return false;
     }
 }
