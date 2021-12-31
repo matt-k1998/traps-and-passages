@@ -12,6 +12,13 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+      /*
+        TODO:
+        1 - Choose a class from Colletions to store Players and print the winner (scoreboard)
+        2 - Possibly refactor the while and for loops innit
+        3 - Add a util class
+     */
+    
 
     final Scanner scanner = new Scanner(System.in);
     /*
