@@ -7,11 +7,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Game {
+public class Game{
       /*
         TODO:
         1 - Choose a class from Colletions to store Players and print the winner (scoreboard)
@@ -76,7 +77,6 @@ public class Game {
         if (position >= gameBoard.length-1){
             return 0;
         }
-        //TODO: check the spot again until it is a 0??
         if (gameBoard[position-1] == 1)
             return -1;
         else if (gameBoard[position-1] == 2)
@@ -115,12 +115,21 @@ public class Game {
             }
             System.out.println(players);
         }
+        showLeaderboard(players);
+    }
+
+    private static void showLeaderboard(List<Player> players) {
+        players.sort(Comparator.comparing(Player::getPosition).reversed());
+        System.out.println("-----------------------------------");
+        for (Player player: players){
+            System.out.println("\tName: ".concat(player.getName()).concat("\t|\tPosition: " + player.getPosition()));
+        }
     }
 
     private boolean hasTheGameEnded(List<Player> players) {
         for (Player player: players){
             if (player.getPosition() >= gameBoard.length-1){
-                System.out.println("Player " + player.getName() + " has reached position " + player.getPosition() + " and won");
+                System.out.println("Player " + player.getName() + " has reached the last position and won");
                 return true;
             }
         }
